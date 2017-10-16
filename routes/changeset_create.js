@@ -5,7 +5,7 @@
 
 var collect = require('collect-stream')
 var xtend = require('xtend')
-var osm2Obj = require('osm2json')
+var osm2Obj = require('osm2obj')
 
 var errors = require('../errors')
 var isValidContentType = require('../lib/util').isValidContentType
@@ -15,7 +15,7 @@ module.exports = function (req, res, api, params, next) {
     return next(new errors.UnsupportedContentType())
   }
 
-  var r = req.pipe(osm2Obj({types: ['changeset'], strict: true, coerceIds: false}))
+  var r = req.pipe(osm2Obj({types: ['changeset'], coerceIds: false}))
   collect(r, function (err, ops) {
     if (err) return next(new errors.XmlParseError(err))
     if (!ops.length) return next(new errors.XmlMissingElement('changeset'))
